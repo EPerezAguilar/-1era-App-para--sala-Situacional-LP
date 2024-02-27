@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulario</title>
+</head>
+<body>
+    <form>
+        <!-- Aquí van los campos del formulario -->
+        <input type="submit" value="Enviar" onclick="return checkCookie()">
+    </form>
+
+    <script>
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            var user = getCookie("username");
+            if (user != "") {
+                alert("Ya ha enviado el formulario.");
+                return false;
+            } else {
+                user = "John Doe";
+                setCookie("username", user, 30);
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+//Este código crea una cookie llamada “username” que se establece cuando el usuario envía el formulario. Luego, cada vez que el usuario intenta enviar el formulario nuevamente, se verifica si la cookie ya existe y, si es así, se muestra una alerta y no se permite que se envíe el formulario.
+
+//Tenga en cuenta que este es solo un ejemplo y que hay muchas formas diferentes de lograr esto. También puede considerar utilizar una base de datos o una API para almacenar y verificar las respuestas del usuario.
+
+
+----------------------------------------------------------------
+
+
+
+import React, { useState } from 'react';
+import { useCookies } from 'react-cookie';
+
+function LoginForm() {
+  const [cookies, setCookie] = useCookies(['showForm']);
+  const [showForm, setShowForm] = useState(!cookies.showForm);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    // Submit the form
+    // ...
+    // Set the cookie to indicate that the user has seen the form
+    setCookie('showForm', true, { path: '/' });
+    setShowForm(false);
+  }
+
+  if (showForm) {
+    return (
+      <form onSubmit={handleSubmit}>
+        {/* Form fields */}
+        <button type="submit">Submit</button>
+      </form>
+    );
+  } else {
+    return <p>You have already seen the form.</p>;
+  }
+}
+
+//En este ejemplo, usamos el hook useCookies para obtener y establecer cookies. Cuando se carga el componente LoginForm, verificamos si la cookie showForm existe. Si la cookie no existe, establecemos el estado showForm en true, lo que hace que se muestre el formulario. Cuando el usuario envía el formulario, establecemos la cookie showForm en true y cambiamos el estado showForm a false, lo que hace que se muestre un mensaje que indica que el usuario ya ha visto el formulario.
+
+//Si la cookie showForm ya existe, establecemos el estado showForm en false, lo que hace que se muestre un mensaje que indica que el usuario ya ha visto el formulario.
+-----------------------------------------------------------
+
+
+
+import React, { useState } from 'react';
+import { useCookies } from 'react-cookie';
+
+function LoginForm() {
+  const [cookies, setCookie] = useCookies(['showForm']);
+  const [showForm, setShowForm] = useState(!cookies.showForm);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    // Submit the form
+    // ...
+    // Set the cookie to indicate that the user has seen the form
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setCookie('showForm', true, { path: '/', expires: tomorrow });
+    setShowForm(false);
+  }
+
+  if (showForm) {
+    return (
+      <form onSubmit={handleSubmit}>
+        {/* Form fields */}
+        <button type="submit">Submit</button>
+      </form>
+    );
+  } else {
+    return <p>You have already seen the form.</p>;
+  }
+}
+
+//En este ejemplo, establecemos la cookie showForm con una fecha de vencimiento que es un día después de la fecha actual. Luego, verificamos si la cookie existe y si la fecha de vencimiento es posterior a la fecha actual. Si la cookie existe y la fecha de vencimiento es posterior a la fecha actual, no se muestra el formulario.
+
+// Si el usuario envía el formulario, establecemos la cookie showForm con una fecha de vencimiento que es un día después de la fecha actual.
